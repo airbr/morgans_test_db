@@ -45,9 +45,10 @@ WHERE REFERENCED_TABLE_SCHEMA = 'employees'`
 `INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (1,'1945-01-01','Monty','Burns','M','1965-01-01');
 INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (2,'1950-01-01','Evil ','VP','M','2020-03-01');`
 
+`INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (1,99999000,'1965-01-01','9999-01-01');
+INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (2,90000000,'2000-01-01','9999-01-01');`
 
-
-Make the company more inclusive - add non binary as a gender option
+**Make the company more inclusive - add non binary as a gender option**
 
 `alter table employees modify gender ENUM('M','F','NB');`
 
@@ -56,45 +57,19 @@ Make the company more inclusive - add non binary as a gender option
 
 
 
-
-
-
+**TODO:**
 
 Investigate gender pay disparities - initial results are promising yet to be solved in detail
 
-
-
-
-
 Put the CEO on a financial PIP - Event schedule or cron job?
-
-
-
-
 
 Attrition: Recruiters snag your least paid senior talent- event schedule to delete employees
 
-
-
-
-
 Attrition: Monthly turnover of 1.25% of the company - event schedule to delete employees from all departments
-
-
-
-
 
 Hiring: Hire to maintain current levels - regaining that lost 1.25% . Difficulty: medium-hard.
 
-
-
-
-
 Event: Company-wide Strike
-
-
-
-
 
 Event: Covid-19 impact
 
