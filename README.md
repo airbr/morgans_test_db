@@ -1,4 +1,137 @@
+Learning database technologies like MySQL can be helped along with a little imagination. In this Repo, we follow the life of "**The Company**". Its where I imagine the Employees sample database as a living breathing entity, undergoing some changes, successes and challenges.
+
+What am I talking about? Basically, I wanted to spice up learning mysql, so I decided to imagine some scenarios how they might come to change the database of this fictional company.
+
+
+
+**Explore the company**
+
+`select count(*) from employees` 
+
+| count(*) |
+| :------- |
+| 300026   |
+
+`describe employees` 
+
+| Field      | Type          | Null | Key  | Default | Extra |
+| ---------- | ------------- | ---- | ---- | ------- | ----- |
+| emp_no     | int           | NO   | PRI  | NULL    |       |
+| birth_date | date          | NO   |      | NULL    |       |
+| first_name | varchar(14)   | NO   |      | NULL    |       |
+| last_name  | varchar(16)   | NO   |      | NULL    |       |
+| gender     | enum('M','F') | YES  |      | NULL    |       |
+| hire_date  | date          | NO   |      | NULL    |       |
+
+**Check the foreign keys**
+
+`SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE REFERENCED_TABLE_SCHEMA = 'employees'`
+
+| TABLE_NAME   | COLUMN_NAME | CONSTRAINT_NAME     | REFERENCED_TABLE_NAME | REFERENCED_COLUMN_NAME |
+| ------------ | ----------- | ------------------- | --------------------- | ---------------------- |
+| dept_emp     | emp_no      | dept_emp_ibfk_1     | employees             | emp_no                 |
+| dept_emp     | dept_no     | dept_emp_ibfk_2     | departments           | dept_no                |
+| dept_manager | emp_no      | dept_manager_ibfk_1 | employees             | emp_no                 |
+| dept_manager | dept_no     | dept_manager_ibfk_2 | departments           | dept_no                |
+| salaries     | emp_no      | salaries_ibfk_1     | employees             | emp_no                 |
+| titles       | emp_no      | titles_ibfk_1       | employees             | emp_no                 |
+
+
+
+**Add a CEO and VP, pay them large amounts of money**
+
+`INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (1,'1945-01-01','Monty','Burns','M','1965-01-01');
+INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (2,'1950-01-01','Evil ','VP','M','2020-03-01');`
+
+
+
+Make the company more inclusive - add non binary as a gender option
+
+`alter table employees modify gender ENUM('M','F','NB');`
+
+`update employees set gender = NB where RAND() < .03;`
+[See this link about usage of Rand() here](https://stackoverflow.com/questions/11087059/mysql-how-do-i-update-50-of-the-rows-randomly-selected);
+
+
+
+
+
+
+
+Investigate gender pay disparities - initial results are promising yet to be solved in detail
+
+
+
+
+
+Put the CEO on a financial PIP - Event schedule or cron job?
+
+
+
+
+
+Attrition: Recruiters snag your least paid senior talent- event schedule to delete employees
+
+
+
+
+
+Attrition: Monthly turnover of 1.25% of the company - event schedule to delete employees from all departments
+
+
+
+
+
+Hiring: Hire to maintain current levels - regaining that lost 1.25% . Difficulty: medium-hard.
+
+
+
+
+
+Event: Company-wide Strike
+
+
+
+
+
+Event: Covid-19 impact
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Original ReadMe:
+
 # test_db
+
 A sample database with an integrated test suite, used to test your applications and database servers
 
 This repository was migrated from [Launchpad](https://launchpad.net/test-db).
