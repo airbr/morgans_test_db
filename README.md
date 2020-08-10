@@ -4,7 +4,9 @@ What am I talking about? Basically, I wanted to spice up learning mysql, so I de
 
 
 
-**Explore the company**
+
+
+**Explore the company and start backups** 
 
 `select count(*) from employees` 
 
@@ -40,7 +42,15 @@ WHERE REFERENCED_TABLE_SCHEMA = 'employees'
 | salaries     | emp_no      | salaries_ibfk_1     | employees             | emp_no                 |
 | titles       | emp_no      | titles_ibfk_1       | employees             | emp_no                 |
 
+**Start backups of the database**
 
+```
+crontab -e
+```
+
+Added this to run every night at ten o' clock. Use absolute paths:
+
+```0 22 * * * /usr/local/bin/mysqldump -uroot -p[password] --all-databases > /absolute/path/to/where/you/want/the/backups/$(date +\%F)_fullcronbackup.sql```
 
 **Add a CEO and VP, pay them large amounts of money**
 
@@ -57,23 +67,22 @@ INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (2,90000000,'2000-01-01','
 `alter table employees modify gender ENUM('M','F','NB');`
 
 `update employees set gender = NB where RAND() < .03;`
+
 [See this link about usage of Rand() here](https://stackoverflow.com/questions/11087059/mysql-how-do-i-update-50-of-the-rows-randomly-selected);
 
-**Put the CEO on a financial performance improvement plan**
-
-Here is some SQL to penalize the CEO, presumably for poor performance:
+**Penalize the CEO, presumably for poor performance:**
 
 `UPDATE salaries SET salary = salary - 1000 WHERE emp_no = '1'`
 
-We have options:
+We have other options:
 
-* Cron Job
-* Event
+* Run SQL script as a Cron Job
+* Event scheduler 
 * Stored Procedure. + event
 
 **Attrition: Recruiters snag your least paid senior talent- event schedule to delete employees**
 
-SQL to find the Senior Engineer who is paid the least:
+SQL to find the Senior Engineer who is currently paid the least:
 
 ```SELECT 
 SELECT 
@@ -93,6 +102,33 @@ LIMIT 1
 
 TODO: Add a Stored Procedure which deletes this selected Engineer (dang recruiters!)
 
+``` sql
+DELIMITER //
+
+CREATE PROCEDURE dang_recruiter()
+BEGIN
+	SELECT 
+    salaries.emp_no, salary, title
+INTO    
+    @empno, @salary, @title
+FROM
+    employees
+        INNER JOIN
+    salaries ON employees.emp_no = salaries.emp_no
+    INNER JOIN
+    titles ON employees.emp_no = titles.emp_no
+    WHERE title = 'Senior Engineer' AND salaries.to_date = '9999-01-01'
+    ORDER BY salary ASC
+    limit 1;
+    
+DELETE FROM employees where emp_no = @empno;
+END //
+
+DELIMITER ;
+```
+
+
+
 TODO: Add a event which calls this stored procedure every 6 weeks
 
 
@@ -101,26 +137,13 @@ TODO: Add a event which calls this stored procedure every 6 weeks
 
 Investigate gender pay disparities - initial results are promising yet to be solved in detail
 
-Put the CEO on a financial PIP - Event schedule or cron job?
-
-```
-DELIMITER //
-
-CREATE PROCEDURE cut_ceo_pay()
-BEGIN
-	UPDATE salaries SET salary = salary - 1000 WHERE `emp_no` = '1';
-END //
-
-DELIMITER ;
-```
-
-
-
-Attrition: Recruiters snag your least paid senior talent- event schedule to delete employees
-
-Attrition: Monthly turnover of 1.25% of the company - event schedule to delete employees from all departments
+Monthly turnover of 1.25% of the company - event schedule to delete employees from all departments
 
 Hiring: Hire to maintain current levels - regaining that lost 1.25% . Difficulty: medium-hard.
+
+Need to generate names
+
+Event: Layoff of a particular department
 
 Event: Company-wide Strike
 
