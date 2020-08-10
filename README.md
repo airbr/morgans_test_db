@@ -25,9 +25,11 @@ What am I talking about? Basically, I wanted to spice up learning mysql, so I de
 
 **Check the foreign keys**
 
-`SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
+```sql
+SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-WHERE REFERENCED_TABLE_SCHEMA = 'employees'`
+WHERE REFERENCED_TABLE_SCHEMA = 'employees'
+```
 
 | TABLE_NAME   | COLUMN_NAME | CONSTRAINT_NAME     | REFERENCED_TABLE_NAME | REFERENCED_COLUMN_NAME |
 | ------------ | ----------- | ------------------- | --------------------- | ---------------------- |
@@ -42,11 +44,13 @@ WHERE REFERENCED_TABLE_SCHEMA = 'employees'`
 
 **Add a CEO and VP, pay them large amounts of money**
 
-`INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (1,'1945-01-01','Monty','Burns','M','1965-01-01');
-INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (2,'1950-01-01','Evil ','VP','M','2020-03-01');`
+```sql
+INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (1,'1945-01-01','Monty','Burns','M','1965-01-01');
+INSERT INTO  (emp_no,birth_date,first_name,last_name,gender,hire_date) VALUES (2,'1950-01-01','Evil ','VP','M','2020-03-01');
 
-`INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (1,99999000,'1965-01-01','9999-01-01');
-INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (2,90000000,'2000-01-01','9999-01-01');`
+INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (1,99999000,'1965-01-01','9999-01-01');
+INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (2,90000000,'2000-01-01','9999-01-01');
+```
 
 **Make the company more inclusive - add non binary as a gender option**
 
@@ -55,6 +59,42 @@ INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (2,90000000,'2000-01-01','
 `update employees set gender = NB where RAND() < .03;`
 [See this link about usage of Rand() here](https://stackoverflow.com/questions/11087059/mysql-how-do-i-update-50-of-the-rows-randomly-selected);
 
+**Put the CEO on a financial performance improvement plan**
+
+Here is some SQL to penalize the CEO, presumably for poor performance:
+
+`UPDATE salaries SET salary = salary - 1000 WHERE emp_no = '1'`
+
+We have options:
+
+* Cron Job
+* Event
+* Stored Procedure. + event
+
+**Attrition: Recruiters snag your least paid senior talent- event schedule to delete employees**
+
+SQL to find the Senior Engineer who is paid the least:
+
+```SELECT 
+SELECT 
+    salaries.emp_no, salary, title
+FROM
+    employees
+        INNER JOIN
+    salaries ON employees.emp_no = salaries.emp_no
+        INNER JOIN
+    titles ON employees.emp_no = titles.emp_no
+WHERE
+    title = 'Senior Engineer'
+        AND salaries.to_date = '9999-01-01'
+ORDER BY salary ASC
+LIMIT 1
+```
+
+TODO: Add a Stored Procedure which deletes this selected Engineer (dang recruiters!)
+
+TODO: Add a event which calls this stored procedure every 6 weeks
+
 
 
 **TODO:**
@@ -62,6 +102,19 @@ INSERT INTO  (emp_no,salary,from_date,to_date) VALUES (2,90000000,'2000-01-01','
 Investigate gender pay disparities - initial results are promising yet to be solved in detail
 
 Put the CEO on a financial PIP - Event schedule or cron job?
+
+```
+DELIMITER //
+
+CREATE PROCEDURE cut_ceo_pay()
+BEGIN
+	UPDATE salaries SET salary = salary - 1000 WHERE `emp_no` = '1';
+END //
+
+DELIMITER ;
+```
+
+
 
 Attrition: Recruiters snag your least paid senior talent- event schedule to delete employees
 
@@ -72,32 +125,6 @@ Hiring: Hire to maintain current levels - regaining that lost 1.25% . Difficulty
 Event: Company-wide Strike
 
 Event: Covid-19 impact
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
