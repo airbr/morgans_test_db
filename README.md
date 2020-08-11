@@ -172,13 +172,13 @@ Insert Dept_employee record entry
 
 **TODO:**
 
-Investigate gender pay disparities - initial results are promising yet to be solved in detail
+Investigate gender pay disparities - initial results are promising there is not a big gap but it remains yet to be solved in detail
 
 Monthly turnover of 1.25% of the company - event schedule to delete employees from all departments
 
 Hiring: Hire to maintain current levels - regaining that lost 1.25% . Difficulty: medium-hard.
 
-
+Script code for some events:
 
 Event: Layoff of a particular department
 
