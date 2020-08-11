@@ -100,7 +100,7 @@ ORDER BY salary ASC
 LIMIT 1
 ```
 
-TODO: Add a Stored Procedure which deletes this selected Engineer (dang recruiters!)
+Add a Stored Procedure which deletes this selected Engineer (dang recruiters!)
 
 ``` sql
 DELIMITER //
@@ -108,9 +108,9 @@ DELIMITER //
 CREATE PROCEDURE dang_recruiter()
 BEGIN
 	SELECT 
-    salaries.emp_no, salary, title
+    salaries.emp_no
 INTO    
-    @empno, @salary, @title
+    @empno
 FROM
     employees
         INNER JOIN
@@ -127,11 +127,48 @@ END //
 DELIMITER ;
 ```
 
+Add a event which calls this stored procedure every hour (yikes!)
+
+```sql
+DROP EVENT IF EXISTS `every_hour_a_recruiter_strikes`;
+DELIMITER $$
+CREATE EVENT `every_hour_a_recruiter_strikes`
+  ON SCHEDULE EVERY 60 MINUTE STARTS '2020-08-09 00:00:00'
+  ON COMPLETION PRESERVE
+DO BEGIN
+  CALL dang_recruiter();
+END 
+$$
+DELIMITER ;
+```
+
+**Need to generate new employees. Use existing names in the database ?**
+
+I need to create new employees, ideally with a salary, title and department and dept.
+
+There are probably a few ways I could approach this.
+
+Its a pretty big database, so I could just use a lot of existing values randomized:
+
+```
+select first_name into @randomfirstname from employees order by rand() limit 1;
+select last_name into @randomlastname from employees order by rand() limit 1;
+select @randomfirstname, @randomlastname;
+```
 
 
-TODO: Add a event which calls this stored procedure every 6 weeks
 
+**TODO:**
 
+Create Stored Procedure:
+
+Insert Employee record, generate random first and last name combo
+
+Insert Title for new employee
+
+Insert Salary for new Employee
+
+Insert Dept_employee record entry
 
 **TODO:**
 
@@ -141,7 +178,7 @@ Monthly turnover of 1.25% of the company - event schedule to delete employees fr
 
 Hiring: Hire to maintain current levels - regaining that lost 1.25% . Difficulty: medium-hard.
 
-Need to generate names
+
 
 Event: Layoff of a particular department
 
